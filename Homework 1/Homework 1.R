@@ -22,5 +22,8 @@ fake_a <- data.frame(x, y)
 fit_a <- stan_glm(y ~ x, data = fake_a)
 print(fit_a)
 
+
+options("repos" = c(CRAN="https://mirrors.tuna.tsinghua.edu.cn/CRAN/"))
+
 # (b) Graph a scatterplot of the data and the regression line.
 # (c) Use the text function in R to add the formula of the fitted line to the graph.
