@@ -36,8 +36,7 @@ print(fit_a, digits=2)
 Graph a scatterplot of the data and the regression line. 
 
 ```{r}
-# ggplot(data=fake_a)+
-#   geom_point(mapping=aes(x=x, y=y))
+
 plot(fake_a$x, fake_a$y)
 a_hat <- coef(fit_a)[1]
 b_hat <- coef(fit_a)[2]
@@ -66,16 +65,11 @@ Simulate 100 data points from the model,  y = a + bx + cx2 + error, with the val
 Fit a regression line stan_glm(y ~ x) to these data and display the output. 
 
 ```{r}
-n1 <- 100
-a_1 <- 10
-b_1 <- 4
-c_1 <- 1
-x_1 <- runif(n1, 0, 50)
-e_1 <- rnorm(n1, 0, 3)
-y_1 <- a_1 + b_1*x_1 + c_1*(x_1^2)
+x_1 <- runif(100, 0, 50)
+e_1 <- rnorm(100, 0, 3)
+y_1 <- 10 + 4*x_1 + 1*(x_1^2)
 fake_1 = data.frame(x_1, y_1)
-# ggplot(data = fake_1)+
-#   geom_point(mapping = aes(x=x_1, y=y_1))
+
 fit_1 = stan_glm(y_1 ~ x_1, data = fake_1, refresh =0 )
 print(fit_1, digits=2)
 ```
@@ -97,12 +91,10 @@ Take the election forecasting model and simplify  it by creating a binary predic
 
 ```{r}
 hibbs <- read.table("hibbs.dat", header = TRUE)
-plot(hibbs$growth, hibbs$vote, xlab = "Economic growth",
-     ylab = "Incument party's vote share")
 n <- length(hibbs$growth)
 growth_bi <- rep(NA, n)
-vote_0 <- rep(NA, 8)
-vote_1 <- rep(NA, 8)
+vote_0 <- rep(NA, 1)
+vote_1 <- rep(NA, 1)
 a <- 1
 b <- 1 
 for (i in 1:n) {
@@ -116,9 +108,7 @@ for (i in 1:n) {
     b <- b+1
   }
 }
-# print(growth_bi)
-print(vote_0)
-print(vote_1)
+
 ```
 
 ### 7.6a
@@ -131,8 +121,8 @@ n_1 <- length(vote_1)
 se_0 <- sd(vote_0)/sqrt(n_0)
 se_1 <- sd(vote_1)/sqrt(n_1)
 se <- sqrt(se_0^2 + se_1^2)
-print(paste("difference in vote shares on average is ", vote_diff))
-print(paste("standard error of this difference is ", se))
+print(paste("difference in vote shares on average is", round(vote_diff, digits = 2) ))
+print(paste("standard error of this difference is", round(se, digits=2)))
 ```
 
 ### 7.6b
@@ -141,8 +131,8 @@ Regress incumbent party’s vote share on the binary predictor of income growth 
 ```{r}
 fit_hibbs <- stan_glm(vote ~ growth_bi, data = hibbs, refresh =0 )
 growth_coef <- coef(fit_hibbs[2])
-print(fit_hibbs, digits=3)
-print(paste("estimated coefficient of the binary predictor", ", and standard error ", " are both almost identical to the above results."))
+print(fit_hibbs, digits=2)
+print(paste("estimated coefficient of the binary predictor and standard error are both almost identical to the above results."))
 
 ```
 
@@ -154,17 +144,15 @@ Simulate 100 data points from the model, y = 2 + 3x + error, with predictors x d
 
 ```{r}
 e1 <- rnorm(n, 0, 5)
-
 x_2 <- runif(n, 0, 20)
-
 y_2 <- 2 + 3*x_2 + e1
 fake_2 = data.frame(x_2, y_2)
 fit_lm = lm(y_2 ~ x_2, data = fake_2)
 fit_stanlm = stan_glm(y_2 ~ x_2, data = fake_2, refresh =0 )
-# print(x_2)
+
 print(fit_lm, digits=2)
 print(fit_stanlm, digits=2)
-# plot(fake_2$x_2, fake_2$y_2)
+
 ```
 
 ### 8.8b
@@ -184,12 +172,11 @@ abline(a = a_hat_stan, b = b_hat_stan)
 Repeat the two steps above, but try to create conditions for your simulation so that lm and  stan_glm give much different results. 
 
 ```{r,echo=F}
-x_3 <- c(0, -80, 5, 0, -6, 9, 300, 1000, -1, 0)
+x_3 <- c(1,2,3,4,5,6,7,8,9,10)
 y_3 <- c(9000, 5, 200, 0, 1600, 5800, 42, 880, 500, 200)
 fake_3 = data.frame(x_3, y_3)
-fit3_lm = lm(y_3 ~ x_3, data = fake_3, refresh =0 )
-fit3_stan = stan_glm(y_3 ~ x_3, data = fake_3, 
-                     )
+fit3_lm = lm(y_3 ~ x_3, data = fake_3)
+fit3_stan = stan_glm(y_3 ~ x_3, data = fake_3, refresh =0)
 plot(fake_3$x_3, fake_3$y_3)
 a_hat_lm <- coef(fit3_lm)[1]
 b_hat_lm <- coef(fit3_lm)[2]
@@ -206,19 +193,15 @@ Simulate 100 data points from the model, y = b0 + b1 x +  b2 z + b3 xz + error, 
 Display your simulated data as a graph of y vs. x, using dots and circles for the points with  z = 0 and 1, respectively. 
 
 ```{r}
-n <- 100
-z1 <- rbinom(n, 1, 0.5)
-
-x1 <- rnorm(n, mean(z1), 1)
-error <- rnorm(n, 0, 3)
+z1 <- rbinom(100, 1, 0.5)
+x1 <- rnorm(100, mean(z1), 1)
+error <- rnorm(100, 0, 3)
 y1 <- 1 + 2*x1 - z1 -2*x1*z1 + error
 xyz <- data.frame(x1, z1, y1)
 ggplot(data = xyz)+
   geom_point(
     mapping = aes(x=x1, y=y1, shape = factor(z1)))+
   scale_shape_manual(values = c(1, 16))
-# print(z1)
-
 
 ```
 
@@ -228,20 +211,16 @@ Fit a regression predicting y from x and z with no interaction. Make a graph wit
 ```{r}
 
 fit_xyz <- stan_glm(y1 ~ x1 + z1, data = xyz, refresh =0 )
-
-int_0 <- coef(fit_xyz)[1]
-slope1 <- coef(fit_xyz)[2]
-z_coef <- coef(fit_xyz)[3]
-int_1 <- int_0 + z_coef
+b_hat <- coef(fit_xyz)
 
 ggplot(data = xyz)+
   geom_point(mapping = aes(x = x1, y = y1, shape = factor(z1) ))+
   scale_shape_manual(values = c(1, 16))+
   geom_abline(
-    aes(intercept = int_0, slope = slope1)
+    aes(intercept = b_hat[1], slope = b_hat[2]), color = "grey"
     )+
   geom_abline(
-    aes(intercept = int_1, slope = slope1)
+    aes(intercept = b_hat[1] + b_hat[3], slope = b_hat[2])
   )
 
 ```
@@ -251,15 +230,8 @@ Fit a regression predicting y from x, z, and their interaction. Make a graph wit
 
 ```{r}
 fit_xyz2 <- stan_glm(y1 ~ x1 + z1 + x1:z1, data = xyz, refresh =0 )
-
-int_z0 <- coef(fit_xyz2)[1]
-slope_x0 <- coef(fit_xyz2)[2]
-z_coef2 <- coef(fit_xyz2)[3]
-xz_coef <- coef(fit_xyz2)[4]
-# y0 = int2 + slope_x*x
-# y1 = int2 +slope-x*x + z_coef +xz-coef*x
-int_z1 <- int_z0 + z_coef2
-slope_x1 = slope_x0 + xz_coef
+print(fit_xyz2)
+b_hat <- coef(fit_xyz2)
 
 ggplot(data = xyz)+
   geom_point(
@@ -267,10 +239,10 @@ ggplot(data = xyz)+
       aes(x = x1, y = y1, shape = factor(z1)))+
   scale_shape_manual(values = c(1, 16))+
   geom_abline(
-    aes(intercept = int_z0, slope = slope_x0), color = "grey"
+    aes(intercept = b_hat[1], slope = b_hat[2]), color = "grey"
   )+
   geom_abline(
-    aes(intercept = int_z1, slope = slope_x1)
+    aes(intercept = b_hat[1] + b_hat[3], slope = b_hat[2] + b_hat[4])
   )
   
 ```
@@ -287,6 +259,7 @@ Write the equation of the estimated regression line of y on x for the treatment 
 
 Answer:
 Equation for both treatment and control group: y = 1.2 + 1.6x + 2.7z + 0.7x*z
+\\
 Equation for control group(z=0): y = 1.2 + 1.6x
 ```{r}
 
@@ -299,7 +272,7 @@ Graph with pen on paper the two regression lines, assuming the values of x fall 
 x2 <- runif(100, 0, 10)
 e2 <- rnorm(100, 0, 0.5)
 z2 <- rbinom(100, 1, 0.5)
-# plot(z2)
+
 y2 <- 1.2 + 1.6*x2 + 2.7*z2 + 0.7*x2*z2 +e2
 xyz2 <- data.frame(x2, y2, z2)
 ggplot(data = xyz2)+
@@ -331,7 +304,6 @@ Answer:Based on the positive coefficient(0.7) of mother's age on kid's score, as
 ```{r}
 fit5a <- stan_glm(kid_score ~ mom_age, data = kidiq, refresh =0)
 print(fit5a)
-plot(kidiq$mom_age, kidiq$kid_score)
 ```
 
 ### 10.5b
@@ -350,12 +322,13 @@ Now create an indicator variable reflecting whether the mother has completed hig
 ```{r}
 fit5c <- stan_glm (kid_score ~ mom_age + mom_hs + mom_age:mom_hs, data = kidiq, refresh =0)
 print(fit5c)
+coeff <- coef(fit5c)
 ggplot(data = kidiq) +
   geom_point(
     mapping = aes(x = mom_age, y=kid_score, shape = factor(mom_hs)))+
   scale_shape_manual(values = c(1, 16))+
-  geom_abline(aes(intercept=coef(fit5c)[1], slope=coef(fit5c)[2]), color = "grey")+
-  geom_abline(aes(intercept =coef(fit5c)[1]+ coef(fit5c)[3], slope=coef(fit5c)[2]+coef(fit5c)[4]))
+  geom_abline(aes(intercept=coeff[1], slope=coeff[2]), color = "grey")+
+  geom_abline(aes(intercept =coeff[1]+ coeff[3], slope=coeff[2]+coeff[4]))
 
 ```
 
@@ -367,9 +340,11 @@ kid_model <- kidiq[1:200,]
 kid_test <- kidiq[201:400,]
 fit5d <- stan_glm(kid_score ~ mom_hs + mom_age + mom_hs:mom_age, data = kid_model, refresh=0)
 print(fit5d) 
+
 kidpredict <- coef(fit5d)[1] + coef(fit5d)[2]*kid_test$mom_hs + 
-    coef(fit5d)[3]*kid_test$mom_age + coef(fit5d)[4]* kid_test$mom_hs * kid_test$mom_age
+    coef(fit5d)[3]*kid_test$mom_age + coef(fit5d)[4]* kid_test$mom_hs * kid_test$mom_age + rnorm(200, 0, 3)
 plot(kidpredict)
+
 plot(kid_test$kid_score)
 ```
 
@@ -395,12 +370,15 @@ print(fit6a)
 Fit some other models, including beauty and also other predictors. Consider at least one  model with interactions. For each model, explain the meaning of each of its estimated  coefficients.
 
 Answer:
-For the first model fit6b1, the intercept means for male instructors whose beauty score is 0, their average evaluation score is 4.21; 
-the coefficient for beauty means that, for male instructors, 1 difference in beauty score corresponds to 0.19 in evaluation score, and for female instructors, 1 difference in beauty score corresponds to (0.19-0.11)=0.08 in evaluation score;
-the coefficient of age is close to zero, meaning age is not a significant predictor for evaluation score;
-the coefficient of female and its interaction with beauty indicate that, comparing instructors with the same beauty scores but with different gender, female instructors on average correspond to (-0.22-0.11)= -0.33 evaluation score than male instructors.
+For the first model fit6b1, the intercept means for male instructors whose beauty score is 0, their average evaluation score is 4.21. 
+The coefficient for beauty means that, for male instructors, 1 difference in beauty score corresponds to 0.19 in evaluation score, and for female instructors, 1 difference in beauty score corresponds to (0.19-0.11)=0.08 in evaluation score.
+The coefficient of age is close to zero, meaning age is not a significant predictor for evaluation score.
+The coefficient of female and its interaction with beauty indicate that, comparing instructors with the same beauty scores but with different gender, female instructors on average correspond to (-0.22-0.11)= -0.33 evaluation score than male instructors.
 
-For the second model fit6b2, 
+For the second model fit6b2, the intercept coefficient means that, for non-minority instructors whose beauty score is 0, their average evaluation score is 4.0. 
+The coefficient for beauty means that, for non-minority instructors, 1 difference in beauty corresponds to 0.2 difference in evaluation score, and for minority instructors, 1 difference in beauty corresponds to (0.2 - 0.1) = 0.1 point in evaluation score.
+The coefficient for minority and its interaction with beauty means that, for instructors with the same beauty score, minority instructors on average are (-0.1-0.2) = -0.3 points lower in evaluation score than non-minority instructors.
+
 ```{r}
 fit6b1 <- stan_glm(eval ~ beauty + age + female + female:beauty, data = beauty, refresh = 0)
 print(fit6b1, digits=2)
