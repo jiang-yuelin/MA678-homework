@@ -394,12 +394,34 @@ Take one of the models from the previous exercise.
 Instructor A is a 50-year-old woman who is a native English speaker and has a beauty score  of -1. Instructor B is a 60-year-old man who is a native English speaker and has a beauty  score of -0.5. Simulate 1000 random draws of the course evaluation rating of these two  instructors. In your simulation, use posterior_predict to account for the uncertainty in  the regression parameters as well as predictive uncertainty. 
 
 ```{r}
+evl <- lm(eval ~ beauty + female + age + nonenglish + beauty * nonenglish,  data = beauty) 
+print(evl)
+sim1 <- sim(evl, 1000)
+#Instructor A is a 50-year-old woman who is a native English speaker and has a beauty score  of -1 
+sim.result <- coef(sim1)[, 1] + -1 * coef(sim1)[, 2] + 
+    1* coef(sim1)[, 3] + 50 *coef(sim1)[, 4] + 
+    0 * coef(sim1)[, 5] + -1 * 0 * coef(sim1)[, 6] 
+
+#Instructor B is a 60-year-old man who is a native English speaker and has a beauty  score of -0.5.
+sim.result2 <- coef(sim1)[, 1] + -0.5 * coef(sim1)[, 2] + 
+    0* coef(sim1)[, 3] + 60 *coef(sim1)[, 4] + 
+    0 * coef(sim1)[, 5] + -0.5 * 0 * coef(sim1)[, 6]
+
+ggplot(data=data.frame(x1=sim.result, x2=sim.result2)) + 
+    geom_histogram(aes(x=x1), fill="red", alpha=.35) +
+    geom_histogram(aes(x=x2), fill="blue", alpha=.35)
 ```
 
 ### 10.7b
 Make a histogram of the difference between the course evaluations for A and B. What is the  probability that A will have a higher evaluation? 
 
 ```{r}
+sim.diff <- sim.result - sim.result2
+ggplot(data = data.frame(x = sim.diff)) +
+  geom_histogram(aes(x), alpha = 0.35) +
+  labs(title = "Difference between the course evaluaitons of A and B", x = "Difference between Simulations between Instructor A and B")
+prob <-mean(sim.diff > 0)
+print(paste("The probability that A will have a higher evaluation is", prob, "."))
 ```
 
 ## 10.8 How many simulation draws: 
@@ -409,6 +431,8 @@ Take the model from Exercise 10.6 that predicts course evaluations  from beauty 
 Display and discuss the fitted model. Focus on the estimate and standard error for the  coefficient of beauty. 
 
 ```{r}
+print(fit6a)
+
 ```
 
 ### 10.8b

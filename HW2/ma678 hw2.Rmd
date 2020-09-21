@@ -1,0 +1,185 @@
+---
+title: "MA678 Homework 2"
+date: "9/10/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(arm)
+library(ggplot2)
+library(MASS)
+library(Matrix)
+library(lme4)
+```
+
+## 11.5 
+Residuals and predictions: The folder Pyth contains outcome y and predictors x1, x2 for 40 data points, with a further 20 points with the predictors but no observed outcome. Save the file to your working directory, then read it into R using read.table().
+
+### (a) 
+Use R to fit a linear regression model predicting y from x1, x2, using the first 40 data points in the file. Summarize the inferences and check the fit of your model.
+
+Answer: The residual standard deviation is small(0.9) and the fraction of variance (R-Squared=0.97) is large, so this is a good fit.
+```{r}
+pyth <- read.table("pyth.txt", header = TRUE)
+head(pyth)
+p.fit <- pyth[1:40,]
+p.predict <- pyth[41:60,]
+fit1 <- stan_glm(y ~ x1 + x2, data = p.fit, refresh =0)
+print(fit1)
+```
+
+### (b) 
+Display the estimated model graphically as in Figure 10.2
+
+```{r}
+sim_1 <- as.matrix(fit1)
+
+# sim_b <- sim(lm)
+n_sim.b <- nrow(sim_1)
+par(mfrow = c(1,2))
+
+# Plot of fit against x1 with x2 held to it's average value
+plot(p.fit$x1, p.fit$y, xlab = "x1", ylab = "y")
+x2_bar <- mean(p.fit$x2)
+sim_dis <- sample(n_sim.b, 10)
+print(coef_b)
+for (i in sim_dis) {
+  curve(cbind(1, x2_bar, x)  %*% sim_1[i,1:3], lwd=0.5, col="gray", add=TRUE)
+}
+curve(cbind(1, x2_bar, x) %*% coef(fit1), col="black", add=TRUE)
+
+plot(p.fit$x2, p.fit$y, xlab = "x2", ylab= "y")
+x1_bar = mean(p.fit$x1)
+for (i in sim_dis) {
+  curve(cbind(1, x1_bar, x) %*% sim_1[i, 1:3], lwd=0.5, col="gray", add=TRUE)
+}
+curve(cbind(1, x1_bar, x) %*% coef(fit1), col="black", add=TRUE)
+```
+
+### (c) 
+Make a residual plot for this model. Do the assumptions appear to be met?
+
+```{r}
+nf <- layout(matrix(1), widths = lcm(10.16), heights = lcm(7.62))
+layout.show(nf)
+y_hat <- coef(fit1)
+```
+
+
+### (d) 
+Make predictions for the remaining 20 data points in the file. How confident do you feel about these predictions?
+
+```{r}
+
+```
+
+
+## 12.5 
+Logarithmic transformation and regression: Consider the following regression: log(weight)=-3.8+2.1log(height)+error, with errors that have standard deviation 0.25. Weights are in pounds and heights are in inches.
+
+### (a) 
+Fill in the blanks: Approximately 68% of the people will have weights within a factor of ______ and ______ of their predicted values from the regression.
+
+### (b) 
+Using pen and paper, sketch the regression line and scatterplot of log(weight) versus log(height) that make sense and are consistent with the fitted model. Be sure to label the axes of your graph.
+
+
+## 12.6 
+Logarithmic transformations: The folder Pollution contains mortality rates and various environmental factors from 60 US metropolitan areas. For this exercise we shall model mortality rate given nitric oxides, sulfur dioxide, and hydrocarbons as inputs. this model is an extreme oversimplication, as it combines all sources of mortality and does not adjust for crucial factors such as age and smoking. We use it to illustrate log transformation in regression.  
+
+### (a) 
+create a scatterplot of mortality rate versus level of nitric oxides. Do you think linear regression will fit these data well? Fit the regression and evaluate a residual plot from the regression.
+
+```{r}
+
+```
+
+### (b) 
+Find an appropriate reansformation that will result in data more appropriate for linear regression. Fit a regression to the transformed data and evaluate the new residual plot.
+
+```{r}
+
+```
+
+### (c) 
+Interpret the slope coefficient from the model you chose in (b)
+
+### (d) 
+Now fit a model predicting mortality rate using levels of nitric oxides, sulfur dioxide, and hydrocarbons as inputs. Use appropriate transformation when helpful. Plot the fitted regression model and interpret the coefficients.
+
+```{r}
+
+```
+
+### (e) 
+Cross validate: fit the model you chose above to the first half of the data and then predict for the second half. You used all the data to construct the model in (d), so this is not really cross validation, but it gives a sense of how the steps of cross validation can be implemented.
+
+```{r}
+
+```
+
+## 12.7 
+Cross validation comparison of models with different transformations of outcomes: when we compare models with transformed continuous outcomes, we must take into account how the nonlinear transformation warps the continuous outcomes. Follow the procedure used to compare models for the mesquite bushes example on page 202.
+
+### (a) 
+Compare models for earnings and for log(earnings) given height and sex as shown in page 84 and 192. Use earnk and log(earnk) as outcomes.
+
+```{r}
+
+```
+
+
+### (b) 
+Compare models from other exercises in this chapter.
+
+## 12.8 
+Log-log transformations: Suppose that, for a certain population of animals, we can predict log  weight from log height as follows:  
+
+* An animal that is 50 centimeters tall is predicted to weigh 10 kg.  
+
+* Every increase of 1% in height corresponds to a predicted increase of 2% in weight.  
+
+* The weights of approximately 95% of the animals fall within a factor of 1.1 of predicted  values.  
+
+### (a) 
+Give the equation of the regression line and the residual standard deviation of the regression.  
+
+### (b) 
+Suppose the standard deviation of log weights is 20% in this population. What, then, is the $R^{2}$ of the regression model described here?  
+
+## 12.9 
+Linear and logarithmic transformations: For a study of congressional elections, you would like  a measure of the relative amount of money raised by each of the two major-party candidates in  each district. Suppose that you know the amount of money raised by each candidate; label these  dollar values Di and Ri. You would like to combine these into a single variable that can be  included as an input variable into a model predicting vote share for the Democrats.  Discuss the advantages and disadvantages of the following measures:  
+
+### (a) 
+The simple difference, $D_{i}-R_{i}$  
+
+### (b) 
+The ratio, $D_{i}/R_{i}$   
+
+### (c) 
+The difference on the logarithmic scale, $log\ D_{i}-log\ R_{i}$   
+
+### (d) 
+The relative proportion, $D_{i}/(D_{i}+R_{i})$. 
+
+## 12.11
+Elasticity: An economist runs a regression examining the relations between the average price  of cigarettes, P, and the quantity purchased, Q, across a large sample of counties in the United  States, assuming the functional form, $logQ=\alpha+\beta logP$. Suppose the estimate for $\beta$ is 0.3.  Interpret this coefficient. 
+
+
+## 12.13
+Building regression models: Return to the teaching evaluations data from Exercise 10.6. Fit  regression models predicting evaluations given many of the inputs in the dataset. Consider interactions, combinations of predictors, and transformations, as appropriate. Consider several  models, discuss in detail the final model that you choose, and also explain why you chose it rather than the others you had considered. 
+
+```{r}
+
+```
+
+
+## 12.14
+Prediction from a fitted regression: Consider one of the fitted models for mesquite leaves,  for example fit_4, in Section 12.6. Suppose you wish to use this model to make inferences  about the average mesquite yield in a new set of trees whose predictors are in data frame called  new_trees. Give R code to obtain an estimate and standard error for this population average.  You do not need to make the prediction; just give the code. 
+
+```{r}
+
+```
+
+
