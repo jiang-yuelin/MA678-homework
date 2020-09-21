@@ -63,7 +63,8 @@ Make a residual plot for this model. Do the assumptions appear to be met?
 ```{r}
 nf <- layout(matrix(1), widths = lcm(10.16), heights = lcm(7.62))
 layout.show(nf)
-y_hat <- coef(fit1)
+y_hat <- coef(fit1) 
+hellodfad 
 ```
 
 
