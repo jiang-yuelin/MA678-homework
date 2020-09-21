@@ -43,7 +43,7 @@ par(mfrow = c(1,2))
 plot(p.fit$x1, p.fit$y, xlab = "x1", ylab = "y")
 x2_bar <- mean(p.fit$x2)
 sim_dis <- sample(n_sim.b, 10)
-print(coef_b)
+
 for (i in sim_dis) {
   curve(cbind(1, x2_bar, x)  %*% sim_1[i,1:3], lwd=0.5, col="gray", add=TRUE)
 }
@@ -60,19 +60,30 @@ curve(cbind(1, x1_bar, x) %*% coef(fit1), col="black", add=TRUE)
 ### (c) 
 Make a residual plot for this model. Do the assumptions appear to be met?
 
+Answer: The residual plot appears odd with a lot of mass in the lower end.
 ```{r}
-nf <- layout(matrix(1), widths = lcm(10.16), heights = lcm(7.62))
-layout.show(nf)
-y_hat <- coef(fit1) 
-hellodfad 
+# nf <- layout(matrix(1))
+# 
+# fit2 <- lm(y ~ x1 + x2, data = p.fit)
+# y_hat <- coef(fit2) 
+# u <- resid(fit2)
+# sigma <-sigma.hat(fit2)
+# residual.plot(y_hat, u, sigma, lwd=1)
+
+sim1 <- as.matrix(fit1)
+predicted <- predict(fit1)
+resid <- p.fit$y - predicted
+plot(predicted, resid)
 ```
 
 
 ### (d) 
 Make predictions for the remaining 20 data points in the file. How confident do you feel about these predictions?
 
+Answer: The residual plot may indicate issues (specifically the linearity assumption) so not quite sure of the goodness of the predictions.
 ```{r}
-
+y_predict <- predict(fit1, p.predict, interval="prediction", level=0.95)
+print(y_predict)
 ```
 
 
