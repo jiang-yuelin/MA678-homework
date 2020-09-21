@@ -92,6 +92,7 @@ Logarithmic transformation and regression: Consider the following regression: lo
 
 ### (a) 
 Fill in the blanks: Approximately 68% of the people will have weights within a factor of ______ and ______ of their predicted values from the regression.
+Answer: exp(0.25) = 1.28
 
 ### (b) 
 Using pen and paper, sketch the regression line and scatterplot of log(weight) versus log(height) that make sense and are consistent with the fitted model. Be sure to label the axes of your graph.
@@ -144,6 +145,7 @@ Compare models for earnings and for log(earnings) given height and sex as shown 
 
 ### (b) 
 Compare models from other exercises in this chapter.
+
 
 ## 12.8 
 Log-log transformations: Suppose that, for a certain population of animals, we can predict log  weight from log height as follows:  
