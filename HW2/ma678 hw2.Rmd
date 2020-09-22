@@ -6,11 +6,13 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
 library(arm)
 library(ggplot2)
 library(MASS)
 library(Matrix)
 library(lme4)
+library(rstanarm)
 ```
 
 ## 11.5 
@@ -62,14 +64,6 @@ Make a residual plot for this model. Do the assumptions appear to be met?
 
 Answer: The residual plot appears odd with a lot of mass in the lower end.
 ```{r}
-# nf <- layout(matrix(1))
-# 
-# fit2 <- lm(y ~ x1 + x2, data = p.fit)
-# y_hat <- coef(fit2) 
-# u <- resid(fit2)
-# sigma <-sigma.hat(fit2)
-# residual.plot(y_hat, u, sigma, lwd=1)
-
 sim1 <- as.matrix(fit1)
 predicted <- predict(fit1)
 resid <- p.fit$y - predicted
@@ -104,15 +98,31 @@ Logarithmic transformations: The folder Pollution contains mortality rates and v
 ### (a) 
 create a scatterplot of mortality rate versus level of nitric oxides. Do you think linear regression will fit these data well? Fit the regression and evaluate a residual plot from the regression.
 
+Answer: Linear regression should be a good start to evaluate this relationship, but the residual standard deviation is large.
 ```{r}
-
+poll <- read.csv("pollution.csv", header = TRUE)
+head(poll)
+plot(poll$nox, poll$mort)
+fit2 <- lm(mort ~ nox, data = poll)
+display(fit2)
+par(mfrow = c(2,2))
+plot(fit2)
+par(mfrow = c(1,1))
+plot(poll$nox, poll$mort)
+abline(fit2)
 ```
 
 ### (b) 
 Find an appropriate reansformation that will result in data more appropriate for linear regression. Fit a regression to the transformed data and evaluate the new residual plot.
 
+Answer: We can observe that using log transformation significantly improved out fitted model's residual sd and R-Squared.
 ```{r}
+fit3 <- lm(log(mort) ~ log(nox), data = poll)
+display(fit3)
 
+ggplot(data = poll, aes(x=log(nox), y= log(mort))) +
+  geom_point() + 
+  stat_smooth(method = "lm", formula = y~ x, se = TRUE)
 ```
 
 ### (c) 
@@ -122,13 +132,31 @@ Interpret the slope coefficient from the model you chose in (b)
 Now fit a model predicting mortality rate using levels of nitric oxides, sulfur dioxide, and hydrocarbons as inputs. Use appropriate transformation when helpful. Plot the fitted regression model and interpret the coefficients.
 
 ```{r}
-
+par(mfrow = c(2,2))
+plot(poll$nox, poll$mort)
+plot(poll$so2 , poll$mort)
+plot(poll$hc, poll$mort)
+lm0 <- lm(log(mort) ~ log(nox)+ log(so2) + log(hc), data = poll)
+display(lm0)
+par(mfrow=c(2,2))
+plot(lm0)
 ```
 
 ### (e) 
 Cross validate: fit the model you chose above to the first half of the data and then predict for the second half. You used all the data to construct the model in (d), so this is not really cross validation, but it gives a sense of how the steps of cross validation can be implemented.
 
 ```{r}
+train <- poll[1:30, ]
+test <- poll[31:60, ]
+
+m1 <- lm(log(mort) ~ log(nox)+ log(so2) + log(hc), data = train)
+display(m1)
+#predict 
+predictions <- predict(m1, test)
+cbind(predictions = exp(predictions), observed = test$mort)
+plot(exp(predictions), test$mort)
+abline(a=0, b =1)
+
 
 ```
 
@@ -158,25 +186,34 @@ Log-log transformations: Suppose that, for a certain population of animals, we c
 
 ### (a) 
 Give the equation of the regression line and the residual standard deviation of the regression.  
+Answer: $log(weight) = 0.02*log(height) + intercept$ and adding the first condition,we have: $log(10) = 0.02*log(50) + intercept, so intercept = 0.966$
+Thus the equation is: $$log(weight) = 0.966 + 0.02*log(height)$$ 
+And the residual standard deviation is $1.1/2 = 0.55$ 
 
 ### (b) 
 Suppose the standard deviation of log weights is 20% in this population. What, then, is the $R^{2}$ of the regression model described here?  
+Answer: $R^{2} = (1 - (\frac{\sigma^{2}}{sd^{2}} ))$, taking in the values for $\sigma$ and sd, 
+we have: $R^{2} = 1 - \frac{20\% ^{2}}{0.55^2} = 0.132$
 
 ## 12.9 
 Linear and logarithmic transformations: For a study of congressional elections, you would like  a measure of the relative amount of money raised by each of the two major-party candidates in  each district. Suppose that you know the amount of money raised by each candidate; label these  dollar values Di and Ri. You would like to combine these into a single variable that can be  included as an input variable into a model predicting vote share for the Democrats.  Discuss the advantages and disadvantages of the following measures:  
 
 ### (a) 
 The simple difference, $D_{i}-R_{i}$  
-
+Advantage: Straightforward, easy to interpret.
+Disadvantage: Does not show the absolute amount of money raised, only the relative difference.
 ### (b) 
 The ratio, $D_{i}/R_{i}$   
-
+Advantage: Simple relationship.
+Disadvantage: Hard to interpret relative increase.
 ### (c) 
 The difference on the logarithmic scale, $log\ D_{i}-log\ R_{i}$   
-
+Advantage: Easy to interpret on the percentage change.
+Disadvantage: Not accounting the absolute amount of money.
 ### (d) 
 The relative proportion, $D_{i}/(D_{i}+R_{i})$. 
-
+Advantage: Shows relative size between party donations and each party as a percentage of the whole amount.
+Disadvantage: Hard to interpret on the relative increase.
 ## 12.11
 Elasticity: An economist runs a regression examining the relations between the average price  of cigarettes, P, and the quantity purchased, Q, across a large sample of counties in the United  States, assuming the functional form, $logQ=\alpha+\beta logP$. Suppose the estimate for $\beta$ is 0.3.  Interpret this coefficient. 
 
