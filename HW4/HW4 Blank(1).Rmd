@@ -1,0 +1,320 @@
+---
+title: "MA678 Homework 4"
+author: "Name"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+pacman::p_load("knitr","ggplot2","rstanarm","tidyverse","forcats", "arm", "foreign", "tinytex", "latexpdf")
+
+```
+
+## Disclaimer
+
+A few things to keep in mind :  
+1) Use set.seed() to make sure that the document produces the same random simulation as when you ran the code.  
+2) Use refresh=0 for any stan_glm() or stan-based model. lm() or non-stan models don't need this!  
+3) You can type outside of the r chunks and make new r chunks where it's convenient. Make sure it's clear which questions you're answering.  
+4) Even if you're not too confident, please try giving an answer to the text responses!  
+5) Please don't print data in the document unless the question asks. It's good for you to do it to look at the data, but not as good for someone trying to read the document later on.  
+6) Check your document before submitting! Please put your name where "name" is by the author!
+
+
+
+# 13.5
+
+Interpreting logistic regression coefficients: Here is a fitted model from the Bangladesh analysis  predicting whether a person with high-arsenic drinking water will switch wells, given the  arsenic level in their existing well and the distance to the nearest safe well:  
+
+stan_glm(formula = switch ~ dist100 + arsenic, family=binomial(link="logit"),  data=wells)  
+
+Median MAD_SD  
+(Intercept) 0.00 0.08  
+dist100 -0.90 0.10  
+arsenic 0.46 0.04  
+
+Compare two people who live the same distance from the nearest well but whose arsenic levels  differ, with one person having an arsenic level of 0.5 and the other person having a level of  1.0. You will estimate how much more likely this second person is to switch wells. Give  an approximate estimate, standard error, 50% interval, and 95% interval, using two different  methods:  
+
+## (a) 
+Use the divide-by-4 rule, based on the information from this regression output.  
+Answer: Pr(0.5 arsenic) = invlogit(0 + 0.46 * 0.5). Divide 0.46 by 4 we get 0.115, so 1 difference in arsenic level corresponds to a 11.5% probability of switching. With standard error 0.04, so 95% range of the coefficient of arsenic would be [0.115 +- 0.04 * 2] = [0.035, 0.195]. And a difference of 0.5 would be estimated 5.75% more likely of switching, 95% range would be [0.018，0.098].
+
+
+## (b) 
+Use predictive simulation from the fitted model in R, under the assumption that these two  people each live 50 meters from the nearest safe well. 
+```{r}
+set.seed(100)
+wells <- read.csv("wells.csv")
+fit1 <- stan_glm(formula = switch ~ dist100 + arsenic, family=binomial(link="logit"),  data=wells, refresh = 0)
+print(fit1, digits =2)
+new <- data.frame(dist100 = 0.5, arsenic = 0.5)
+pred <- predict(fit1, newdata = new )
+new1 <- data.frame(dist100 = 0.5, arsenic = 1)
+pred1 <- predict(fit1, newdata = new1 )
+print(paste("pred1 - pred=",pred1-pred))
+```
+Answer: So the second person are 23% more likely to switch well than the first person.
+
+# 13.7
+
+Graphing a fitted logistic regression: We downloaded data with weight (in pounds) and age (in  years) from a random sample of American adults. We then defined a new variable:  heavy <- weight > 200  and fit a logistic regression, predicting heavy from height (in inches):  
+stan_glm(formula = heavy ~ height, family=binomial(link="logit"), data=health)  
+  Median MAD_SD  
+(Intercept) -21.51 1.60  
+height 0.28 0.02  
+
+## (a) 
+Graph the logistic regression curve (the probability that someone is heavy) over the  approximate range of the data. Be clear where the line goes through the 50% probability  point.  
+
+
+## (b) 
+Fill in the blank: near the 50% point, comparing two people who differ by one inch in height,  you’ll expect a difference of ____ in the probability of being heavy. 
+Answer: 7%
+
+# 13.8
+Linear transformations: In the regression from the previous exercise, suppose you replaced  height in inches by height in centimeters. What would then be the intercept and slope? 
+Answer: The intercept does not change and the slope change to 2.5 times prior.
+
+ 
+# 13.10
+Expressing a comparison of proportions as a logistic regression: A randomized experiment  is performed within a survey, and 1000 people are contacted. Half the people contacted are  promised a $5 incentive to participate, and half are not promised an incentive. The result is a  50% response rate among the treated group and 40% response rate among the control group.  
+
+## (a) 
+Set up these results as data in R. From these data, fit a logistic regression of response on the  treatment indicator. 
+```{r}
+set.seed(1000)
+tgroup <- data.frame(x =1, y=rbinom(500, 1, 0.5))
+cgroup <- data.frame(x= 0, y=rbinom(500, 1, 0.4))
+data1 <- rbind(tgroup, cgroup)
+fit2 <- stan_glm(y~x, family = binomial(link = "logit"), data = data1, refresh =0)
+print(fit2, digits = 2)
+```
+
+
+## (b) 
+Compare to the results from Exercise 4.1. 
+
+
+# 13.11
+Building a logistic regression model: The folder Rodents contains data on rodents in a sample  of New York City apartments.  
+
+## (a) 
+Build a logistic regression model to predict the presence of rodents (the variable rodent2 in  the dataset) given indicators for the ethnic groups (race). Combine categories as appropriate.  Discuss the estimated coefficients in the model.  
+
+```{r}
+set.seed(100)
+rod <- read.csv("hvs02_sorted.csv")
+# newrod <- fct_collapse(rod$race, white=0, poc =c(2,3,4,5,6,7))
+
+# combine groups of race: white = 0, poc/multi racial = 1
+for (i in 1:length(rod$race)) {
+  if(rod$race[i] ==1){
+    rod$race[i] <- 0
+  } else{
+    rod$race[i] <- 1
+  }
+}
+# fit the logistic regression on a single variable race.
+fit3 <- stan_glm(rodent2 ~ race , family = binomial(link = "logit"), data = rod, refresh =0)
+print(fit3)
+```
+
+## (b) 
+Add to your model some other potentially relevant predictors describing the apartment, building, and community district. Build your model using the general principles explained in Section 12.6. Discuss the coefficients for the ethnicity indicators in your model. 
+
+```{r}
+# add new variables to the logistic model: 
+ # race: binary variable, people of color =1, white = 0
+ # 
+set.seed(100)
+fit4 <- stan_glm(rodent2 ~ race + intcrack2 +inthole2 + race:povertyx2, family = binomial(link = "logit"), data = rod, refresh =0)
+print(fit4, digits =2)
+```
+
+
+# 14.3
+Graphing logistic regressions: The well-switching data described in Section 13.7 are in the  folder Arsenic.
+
+## (a)
+Fit a logistic regression for the probability of switching using log (distance to nearest safe  well) as a predictor.
+
+```{r}
+set.seed(100)
+fit5 <- stan_glm(switch ~ dist,family = binomial(link = "logit") ,data = wells, refresh = 0)
+print(fit5)
+```
+
+## (b)
+Make a graph similar to Figure 13.8b displaying Pr(switch) as a function of distance to  nearest safe well, along with the data.
+
+```{r}
+# Jitter binary outcome variable switch between 0 and 1
+set.seed(100)
+jitter_bi <- function(a, jitt = 0.05){
+  ifelse(a==0, runif(length(a), 0, jitt), runif(length(a), 1-jitt, 1))
+}
+
+wells$switch_jitter <- jitter_bi(wells$switch)
+plot(wells$dist, wells$switch_jitter)
+curve(invlogit(coef(fit5)[1] + coef(fit5)[2]*x), add = TRUE)
+```
+
+
+## (c)
+Make a residual plot and binned residual plot as in Figure 14.8.
+
+```{r}
+set.seed(100)
+par(mfrow=c(2,2))
+
+plot(predict(fit5), residuals(fit5), main="Residual plot", xlab="Expected Values", ylab="Residuals")
+binnedplot(predict(fit5) , residuals(fit5))
+
+```
+
+
+## (d)
+Compute the error rate of the fitted model and compare to the error rate of the null model.
+
+```{r}
+set.seed(100)
+# error rate of the fitted model
+predicted <- predict(fit5)
+y <- wells$switch
+mean((predicted>0.5 & y==0) | (predicted<0.5 & y==1))
+# error rate of the null model
+predicted.null <- seq(0, 0, length.out=length(y))
+mean((predicted.null>0.5 & y==0) | (predicted.null<0.5 & y==1))
+```
+
+
+## (e)
+Create indicator variables corresponding to dist<100; dist between 100 and 200; and dist>200. Fit a logistic regression for Pr(switch) using these indicators. With this new  model, repeat the computations and graphs for part (a) of this exercise.
+
+```{r}
+wells$dist_lt100 <- as.numeric(wells$dist < 100)
+wells$dist_gte100_lt200 <- as.numeric(100 <= wells$dist & wells$dist < 200)
+wells$dist_gte200 <- as.numeric(wells$dist <= 200)
+fit6 <- glm(switch ~ dist_lt100 + dist_gte100_lt200 + dist_gte200, data=wells, family=binomial(link="logit"))
+display(fit6)
+```
+
+
+#14.5
+Working with logistic regression: In a class of 50 students, a logistic regression is performed  of course grade (pass or fail) on midterm exam score (continuous values with mean 60 and standard deviation 15). The fitted model is Pr(pass) = logit-1(-24 + 0.4x).
+
+## (a)
+Graph the fitted model. Also on this graph put a scatterplot of hypothetical data consistent  with the information given.
+
+```{r}
+
+```
+
+## (b)
+Suppose the midterm scores were transformed to have a mean of 0 and standard deviation of 1. What would be the equation of the logistic regression using these transformed scores as a redictor?
+
+```{r}
+
+```
+
+
+## (c)
+Create a new predictor that is pure noise; for example, in R you can create
+newpred <- rnorm(n,0,1).
+Add it to your model. How much does the leave-one-out cross validation score decrease?
+
+```{r}
+
+```
+
+
+#14.7
+Model building and comparison: Continue with the well-switching data described in the  previous exercise.
+
+## (a)
+Fit a logistic regression for the probability of switching using, as predictors, distance,  log(arsenic), and their interaction. Interpret the estimated coefficients and their standard  errors.
+
+```{r}
+
+```
+
+
+## (b)
+Make graphs as in Figure 14.3 to show the relation between probability of switching, distance,  and arsenic level.
+
+```{r}
+
+```
+
+
+## (c)
+Following the procedure described in Section 14.4, compute the average predictive differences  corresponding to:  
+i. A comparison of dist = 0 to dist = 100, with arsenic held constant.  
+ii. A comparison of dist = 100 to dist = 200, with arsenic held constant.  
+iii. A comparison of arsenic = 0.5 to arsenic = 1.0, with dist held constant.  
+iv. A comparison of arsenic = 1.0 to arsenic = 2.0, with dist held constant.  
+
+Discuss these results. 
+
+```{r}
+
+```
+
+
+# 14.9
+Linear or logistic regression for discrete data: Simulate continuous data from the regression  model, z = a + bx + error. Set the parameters so that the outcomes z are positive about half the  time and negative about half the time.  
+
+## (a) 
+Create a binary variable y that equals 1 if z is positive or 0 if z is negative. Fit a logistic  regression predicting y from x.  
+
+```{r}
+
+```
+
+
+## (b) 
+Fit a linear regression predicting y from x: you can do this, even though the data y are  discrete.  
+
+```{r}
+
+```
+
+
+## (c) 
+Estimate the average predictive comparison—the expected difference in y, corresponding to  a unit difference in x—based on the fitted logistic regression in (a). Compare this average  predictive comparison to the linear regression coefficient in (b). 
+
+```{r}
+
+```
+
+
+# 14.10
+Linear or logistic regression for discrete data: In the setup of the previous exercise:  
+
+## (a) 
+Set the parameters of your simulation so that the coefficient estimate in (b) and the average  predictive comparison in (c) are close.  
+
+```{r}
+
+```
+
+
+## (b) 
+Set the parameters of your simulation so that the coefficient estimate in (b) and the average  predictive comparison in (c) are much different.  
+
+```{r}
+
+```
+
+
+## (c) 
+In general, when will it work reasonably well to fit a linear model to predict a binary  outcome?  See also Exercise 13.12. 
+
+```{r}
+
+```
+
+

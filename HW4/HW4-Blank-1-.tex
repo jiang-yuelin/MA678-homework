@@ -1,0 +1,630 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={MA678 Homework 4},
+  pdfauthor={Name},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\title{MA678 Homework 4}
+\author{Name}
+\date{}
+
+\begin{document}
+\maketitle
+
+\hypertarget{disclaimer}{%
+\subsection{Disclaimer}\label{disclaimer}}
+
+A few things to keep in mind :\\
+1) Use set.seed() to make sure that the document produces the same
+random simulation as when you ran the code.\\
+2) Use refresh=0 for any stan\_glm() or stan-based model. lm() or
+non-stan models don't need this!\\
+3) You can type outside of the r chunks and make new r chunks where it's
+convenient. Make sure it's clear which questions you're answering.\\
+4) Even if you're not too confident, please try giving an answer to the
+text responses!\\
+5) Please don't print data in the document unless the question asks.
+It's good for you to do it to look at the data, but not as good for
+someone trying to read the document later on.\\
+6) Check your document before submitting! Please put your name where
+``name'' is by the author!
+
+\hypertarget{section}{%
+\section{13.5}\label{section}}
+
+Interpreting logistic regression coefficients: Here is a fitted model
+from the Bangladesh analysis predicting whether a person with
+high-arsenic drinking water will switch wells, given the arsenic level
+in their existing well and the distance to the nearest safe well:
+
+stan\_glm(formula = switch \textasciitilde{} dist100 + arsenic,
+family=binomial(link=``logit''), data=wells)
+
+Median MAD\_SD\\
+(Intercept) 0.00 0.08\\
+dist100 -0.90 0.10\\
+arsenic 0.46 0.04
+
+Compare two people who live the same distance from the nearest well but
+whose arsenic levels differ, with one person having an arsenic level of
+0.5 and the other person having a level of 1.0. You will estimate how
+much more likely this second person is to switch wells. Give an
+approximate estimate, standard error, 50\% interval, and 95\% interval,
+using two different methods:
+
+\hypertarget{a}{%
+\subsection{(a)}\label{a}}
+
+Use the divide-by-4 rule, based on the information from this regression
+output.\\
+Answer: Pr(0.5 arsenic) = invlogit(0 + 0.46 * 0.5). Divide 0.46 by 4 we
+get 0.115, so 1 difference in arsenic level corresponds to a 11.5\%
+probability of switching. With standard error 0.04, so 95\% range of the
+coefficient of arsenic would be {[}0.115 +- 0.04 * 2{]} = {[}0.035,
+0.195{]}. And a difference of 0.5 would be estimated 5.75\% more likely
+of switching, 95\% range would be {[}0.018，0.098{]}.
+
+\hypertarget{b}{%
+\subsection{(b)}\label{b}}
+
+Use predictive simulation from the fitted model in R, under the
+assumption that these two people each live 50 meters from the nearest
+safe well.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{100}\NormalTok{)}
+\NormalTok{wells <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"wells.csv"}\NormalTok{)}
+\NormalTok{fit1 <-}\StringTok{ }\KeywordTok{stan_glm}\NormalTok{(}\DataTypeTok{formula =} \ControlFlowTok{switch} \OperatorTok{~}\StringTok{ }\NormalTok{dist100 }\OperatorTok{+}\StringTok{ }\NormalTok{arsenic, }\DataTypeTok{family=}\KeywordTok{binomial}\NormalTok{(}\DataTypeTok{link=}\StringTok{"logit"}\NormalTok{),  }\DataTypeTok{data=}\NormalTok{wells, }\DataTypeTok{refresh =} \DecValTok{0}\NormalTok{)}
+\KeywordTok{print}\NormalTok{(fit1, }\DataTypeTok{digits =}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## stan_glm
+##  family:       binomial [logit]
+##  formula:      switch ~ dist100 + arsenic
+##  observations: 3020
+##  predictors:   3
+## ------
+##             Median MAD_SD
+## (Intercept)  0.00   0.08 
+## dist100     -0.90   0.10 
+## arsenic      0.46   0.04 
+## 
+## ------
+## * For help interpreting the printed output see ?print.stanreg
+## * For info on the priors used see ?prior_summary.stanreg
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{new <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{dist100 =} \FloatTok{0.5}\NormalTok{, }\DataTypeTok{arsenic =} \FloatTok{0.5}\NormalTok{)}
+\NormalTok{pred <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(fit1, }\DataTypeTok{newdata =}\NormalTok{ new )}
+\NormalTok{new1 <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{dist100 =} \FloatTok{0.5}\NormalTok{, }\DataTypeTok{arsenic =} \DecValTok{1}\NormalTok{)}
+\NormalTok{pred1 <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(fit1, }\DataTypeTok{newdata =}\NormalTok{ new1 )}
+\KeywordTok{print}\NormalTok{(}\KeywordTok{paste}\NormalTok{(}\StringTok{"pred1 - pred="}\NormalTok{,pred1}\OperatorTok{-}\NormalTok{pred))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "pred1 - pred= 0.231050322381434"
+\end{verbatim}
+
+Answer: So the second person are 23\% more likely to switch well than
+the first person.
+
+\hypertarget{section-1}{%
+\section{13.7}\label{section-1}}
+
+Graphing a fitted logistic regression: We downloaded data with weight
+(in pounds) and age (in years) from a random sample of American adults.
+We then defined a new variable: heavy \textless- weight \textgreater{}
+200 and fit a logistic regression, predicting heavy from height (in
+inches):\\
+stan\_glm(formula = heavy \textasciitilde{} height,
+family=binomial(link=``logit''), data=health)\\
+Median MAD\_SD\\
+(Intercept) -21.51 1.60\\
+height 0.28 0.02
+
+\hypertarget{a-1}{%
+\subsection{(a)}\label{a-1}}
+
+Graph the logistic regression curve (the probability that someone is
+heavy) over the approximate range of the data. Be clear where the line
+goes through the 50\% probability point.
+
+\hypertarget{b-1}{%
+\subsection{(b)}\label{b-1}}
+
+Fill in the blank: near the 50\% point, comparing two people who differ
+by one inch in height, you'll expect a difference of \_\_\_\_ in the
+probability of being heavy. Answer: 7\%
+
+\hypertarget{section-2}{%
+\section{13.8}\label{section-2}}
+
+Linear transformations: In the regression from the previous exercise,
+suppose you replaced height in inches by height in centimeters. What
+would then be the intercept and slope? Answer: The intercept does not
+change and the slope change to 2.5 times prior.
+
+\hypertarget{section-3}{%
+\section{13.10}\label{section-3}}
+
+Expressing a comparison of proportions as a logistic regression: A
+randomized experiment is performed within a survey, and 1000 people are
+contacted. Half the people contacted are promised a \$5 incentive to
+participate, and half are not promised an incentive. The result is a
+50\% response rate among the treated group and 40\% response rate among
+the control group.
+
+\hypertarget{a-2}{%
+\subsection{(a)}\label{a-2}}
+
+Set up these results as data in R. From these data, fit a logistic
+regression of response on the treatment indicator.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1000}\NormalTok{)}
+\NormalTok{tgroup <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{x =}\DecValTok{1}\NormalTok{, }\DataTypeTok{y=}\KeywordTok{rbinom}\NormalTok{(}\DecValTok{500}\NormalTok{, }\DecValTok{1}\NormalTok{, }\FloatTok{0.5}\NormalTok{))}
+\NormalTok{cgroup <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{x=} \DecValTok{0}\NormalTok{, }\DataTypeTok{y=}\KeywordTok{rbinom}\NormalTok{(}\DecValTok{500}\NormalTok{, }\DecValTok{1}\NormalTok{, }\FloatTok{0.4}\NormalTok{))}
+\NormalTok{data1 <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(tgroup, cgroup)}
+\NormalTok{fit2 <-}\StringTok{ }\KeywordTok{stan_glm}\NormalTok{(y}\OperatorTok{~}\NormalTok{x, }\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(}\DataTypeTok{link =} \StringTok{"logit"}\NormalTok{), }\DataTypeTok{data =}\NormalTok{ data1, }\DataTypeTok{refresh =}\DecValTok{0}\NormalTok{)}
+\KeywordTok{print}\NormalTok{(fit2, }\DataTypeTok{digits =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## stan_glm
+##  family:       binomial [logit]
+##  formula:      y ~ x
+##  observations: 1000
+##  predictors:   2
+## ------
+##             Median MAD_SD
+## (Intercept) -0.48   0.09 
+## x            0.65   0.13 
+## 
+## ------
+## * For help interpreting the printed output see ?print.stanreg
+## * For info on the priors used see ?prior_summary.stanreg
+\end{verbatim}
+
+\hypertarget{b-2}{%
+\subsection{(b)}\label{b-2}}
+
+Compare to the results from Exercise 4.1.
+
+\hypertarget{section-4}{%
+\section{13.11}\label{section-4}}
+
+Building a logistic regression model: The folder Rodents contains data
+on rodents in a sample of New York City apartments.
+
+\hypertarget{a-3}{%
+\subsection{(a)}\label{a-3}}
+
+Build a logistic regression model to predict the presence of rodents
+(the variable rodent2 in the dataset) given indicators for the ethnic
+groups (race). Combine categories as appropriate. Discuss the estimated
+coefficients in the model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{100}\NormalTok{)}
+\NormalTok{rod <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"hvs02_sorted.csv"}\NormalTok{)}
+\CommentTok{# newrod <- fct_collapse(rod$race, white=0, poc =c(2,3,4,5,6,7))}
+
+\CommentTok{# combine groups of race: white = 0, poc/multi racial = 1}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{length}\NormalTok{(rod}\OperatorTok{$}\NormalTok{race)) \{}
+  \ControlFlowTok{if}\NormalTok{(rod}\OperatorTok{$}\NormalTok{race[i] }\OperatorTok{==}\DecValTok{1}\NormalTok{)\{}
+\NormalTok{    rod}\OperatorTok{$}\NormalTok{race[i] <-}\StringTok{ }\DecValTok{0}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{\{}
+\NormalTok{    rod}\OperatorTok{$}\NormalTok{race[i] <-}\StringTok{ }\DecValTok{1}
+\NormalTok{  \}}
+\NormalTok{\}}
+\CommentTok{# fit the logistic regression on a single variable race.}
+\NormalTok{fit3 <-}\StringTok{ }\KeywordTok{stan_glm}\NormalTok{(rodent2 }\OperatorTok{~}\StringTok{ }\NormalTok{race , }\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(}\DataTypeTok{link =} \StringTok{"logit"}\NormalTok{), }\DataTypeTok{data =}\NormalTok{ rod, }\DataTypeTok{refresh =}\DecValTok{0}\NormalTok{)}
+\KeywordTok{print}\NormalTok{(fit3)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## stan_glm
+##  family:       binomial [logit]
+##  formula:      rodent2 ~ race
+##  observations: 13931
+##  predictors:   2
+## ------
+##             Median MAD_SD
+## (Intercept) -2.2    0.0  
+## race         1.5    0.0  
+## 
+## ------
+## * For help interpreting the printed output see ?print.stanreg
+## * For info on the priors used see ?prior_summary.stanreg
+\end{verbatim}
+
+\hypertarget{b-3}{%
+\subsection{(b)}\label{b-3}}
+
+Add to your model some other potentially relevant predictors describing
+the apartment, building, and community district. Build your model using
+the general principles explained in Section 12.6. Discuss the
+coefficients for the ethnicity indicators in your model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# add new variables to the logistic model: }
+ \CommentTok{# race: binary variable, people of color =1, white = 0}
+ \CommentTok{# }
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{100}\NormalTok{)}
+\NormalTok{fit4 <-}\StringTok{ }\KeywordTok{stan_glm}\NormalTok{(rodent2 }\OperatorTok{~}\StringTok{ }\NormalTok{race }\OperatorTok{+}\StringTok{ }\NormalTok{intcrack2 }\OperatorTok{+}\NormalTok{inthole2 }\OperatorTok{+}\StringTok{ }\NormalTok{race}\OperatorTok{:}\NormalTok{povertyx2, }\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(}\DataTypeTok{link =} \StringTok{"logit"}\NormalTok{), }\DataTypeTok{data =}\NormalTok{ rod, }\DataTypeTok{refresh =}\DecValTok{0}\NormalTok{)}
+\KeywordTok{print}\NormalTok{(fit4, }\DataTypeTok{digits =}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## stan_glm
+##  family:       binomial [logit]
+##  formula:      rodent2 ~ race + intcrack2 + inthole2 + race:povertyx2
+##  observations: 13510
+##  predictors:   5
+## ------
+##                Median MAD_SD
+## (Intercept)    -2.42   0.05 
+## race            1.13   0.06 
+## intcrack2       1.31   0.06 
+## inthole2        1.30   0.09 
+## race:povertyx2  0.44   0.05 
+## 
+## ------
+## * For help interpreting the printed output see ?print.stanreg
+## * For info on the priors used see ?prior_summary.stanreg
+\end{verbatim}
+
+\hypertarget{section-5}{%
+\section{14.3}\label{section-5}}
+
+Graphing logistic regressions: The well-switching data described in
+Section 13.7 are in the folder Arsenic.
+
+\hypertarget{a-4}{%
+\subsection{(a)}\label{a-4}}
+
+Fit a logistic regression for the probability of switching using log
+(distance to nearest safe well) as a predictor.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{100}\NormalTok{)}
+\NormalTok{fit5 <-}\StringTok{ }\KeywordTok{stan_glm}\NormalTok{(}\ControlFlowTok{switch} \OperatorTok{~}\StringTok{ }\NormalTok{dist,}\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(}\DataTypeTok{link =} \StringTok{"logit"}\NormalTok{) ,}\DataTypeTok{data =}\NormalTok{ wells, }\DataTypeTok{refresh =} \DecValTok{0}\NormalTok{)}
+\KeywordTok{print}\NormalTok{(fit5)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## stan_glm
+##  family:       binomial [logit]
+##  formula:      switch ~ dist
+##  observations: 3020
+##  predictors:   2
+## ------
+##             Median MAD_SD
+## (Intercept) 0.6    0.1   
+## dist        0.0    0.0   
+## 
+## ------
+## * For help interpreting the printed output see ?print.stanreg
+## * For info on the priors used see ?prior_summary.stanreg
+\end{verbatim}
+
+\hypertarget{b-4}{%
+\subsection{(b)}\label{b-4}}
+
+Make a graph similar to Figure 13.8b displaying Pr(switch) as a function
+of distance to nearest safe well, along with the data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Jitter binary outcome variable switch between 0 and 1}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{100}\NormalTok{)}
+\NormalTok{jitter_bi <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(a, }\DataTypeTok{jitt =} \FloatTok{0.05}\NormalTok{)\{}
+  \KeywordTok{ifelse}\NormalTok{(a}\OperatorTok{==}\DecValTok{0}\NormalTok{, }\KeywordTok{runif}\NormalTok{(}\KeywordTok{length}\NormalTok{(a), }\DecValTok{0}\NormalTok{, jitt), }\KeywordTok{runif}\NormalTok{(}\KeywordTok{length}\NormalTok{(a), }\DecValTok{1}\OperatorTok{-}\NormalTok{jitt, }\DecValTok{1}\NormalTok{))}
+\NormalTok{\}}
+
+\NormalTok{wells}\OperatorTok{$}\NormalTok{switch_jitter <-}\StringTok{ }\KeywordTok{jitter_bi}\NormalTok{(wells}\OperatorTok{$}\ControlFlowTok{switch}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(wells}\OperatorTok{$}\NormalTok{dist, wells}\OperatorTok{$}\NormalTok{switch_jitter)}
+\KeywordTok{curve}\NormalTok{(}\KeywordTok{invlogit}\NormalTok{(}\KeywordTok{coef}\NormalTok{(fit5)[}\DecValTok{1}\NormalTok{] }\OperatorTok{+}\StringTok{ }\KeywordTok{coef}\NormalTok{(fit5)[}\DecValTok{2}\NormalTok{]}\OperatorTok{*}\NormalTok{x), }\DataTypeTok{add =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{HW4-Blank-1-_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+\hypertarget{c}{%
+\subsection{(c)}\label{c}}
+
+Make a residual plot and binned residual plot as in Figure 14.8.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{100}\NormalTok{)}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow=}\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+
+\KeywordTok{plot}\NormalTok{(}\KeywordTok{predict}\NormalTok{(fit5), }\KeywordTok{residuals}\NormalTok{(fit5), }\DataTypeTok{main=}\StringTok{"Residual plot"}\NormalTok{, }\DataTypeTok{xlab=}\StringTok{"Expected Values"}\NormalTok{, }\DataTypeTok{ylab=}\StringTok{"Residuals"}\NormalTok{)}
+\KeywordTok{binnedplot}\NormalTok{(}\KeywordTok{predict}\NormalTok{(fit5) , }\KeywordTok{residuals}\NormalTok{(fit5))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{HW4-Blank-1-_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+\hypertarget{d}{%
+\subsection{(d)}\label{d}}
+
+Compute the error rate of the fitted model and compare to the error rate
+of the null model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{100}\NormalTok{)}
+\CommentTok{# error rate of the fitted model}
+\NormalTok{predicted <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(fit5)}
+\NormalTok{y <-}\StringTok{ }\NormalTok{wells}\OperatorTok{$}\ControlFlowTok{switch}
+\KeywordTok{mean}\NormalTok{((predicted}\OperatorTok{>}\FloatTok{0.5} \OperatorTok{&}\StringTok{ }\NormalTok{y}\OperatorTok{==}\DecValTok{0}\NormalTok{) }\OperatorTok{|}\StringTok{ }\NormalTok{(predicted}\OperatorTok{<}\FloatTok{0.5} \OperatorTok{&}\StringTok{ }\NormalTok{y}\OperatorTok{==}\DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.5387417
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# error rate of the null model}
+\NormalTok{predicted.null <-}\StringTok{ }\KeywordTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DataTypeTok{length.out=}\KeywordTok{length}\NormalTok{(y))}
+\KeywordTok{mean}\NormalTok{((predicted.null}\OperatorTok{>}\FloatTok{0.5} \OperatorTok{&}\StringTok{ }\NormalTok{y}\OperatorTok{==}\DecValTok{0}\NormalTok{) }\OperatorTok{|}\StringTok{ }\NormalTok{(predicted.null}\OperatorTok{<}\FloatTok{0.5} \OperatorTok{&}\StringTok{ }\NormalTok{y}\OperatorTok{==}\DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.5751656
+\end{verbatim}
+
+\hypertarget{e}{%
+\subsection{(e)}\label{e}}
+
+Create indicator variables corresponding to dist\textless100; dist
+between 100 and 200; and dist\textgreater200. Fit a logistic regression
+for Pr(switch) using these indicators. With this new model, repeat the
+computations and graphs for part (a) of this exercise.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{wells}\OperatorTok{$}\NormalTok{dist_lt100 <-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(wells}\OperatorTok{$}\NormalTok{dist }\OperatorTok{<}\StringTok{ }\DecValTok{100}\NormalTok{)}
+\NormalTok{wells}\OperatorTok{$}\NormalTok{dist_gte100_lt200 <-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(}\DecValTok{100} \OperatorTok{<=}\StringTok{ }\NormalTok{wells}\OperatorTok{$}\NormalTok{dist }\OperatorTok{&}\StringTok{ }\NormalTok{wells}\OperatorTok{$}\NormalTok{dist }\OperatorTok{<}\StringTok{ }\DecValTok{200}\NormalTok{)}
+\NormalTok{wells}\OperatorTok{$}\NormalTok{dist_gte200 <-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(wells}\OperatorTok{$}\NormalTok{dist }\OperatorTok{<=}\StringTok{ }\DecValTok{200}\NormalTok{)}
+\NormalTok{fit6 <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(}\ControlFlowTok{switch} \OperatorTok{~}\StringTok{ }\NormalTok{dist_lt100 }\OperatorTok{+}\StringTok{ }\NormalTok{dist_gte100_lt200 }\OperatorTok{+}\StringTok{ }\NormalTok{dist_gte200, }\DataTypeTok{data=}\NormalTok{wells, }\DataTypeTok{family=}\KeywordTok{binomial}\NormalTok{(}\DataTypeTok{link=}\StringTok{"logit"}\NormalTok{))}
+\KeywordTok{display}\NormalTok{(fit6)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## glm(formula = switch ~ dist_lt100 + dist_gte100_lt200 + dist_gte200, 
+##     family = binomial(link = "logit"), data = wells)
+##                   coef.est coef.se
+## (Intercept)       -1.25     0.80  
+## dist_lt100         1.63     0.80  
+## dist_gte100_lt200  0.97     0.81  
+## ---
+##   n = 3020, k = 3
+##   residual deviance = 4084.7, null deviance = 4118.1 (difference = 33.4)
+\end{verbatim}
+
+\#14.5 Working with logistic regression: In a class of 50 students, a
+logistic regression is performed of course grade (pass or fail) on
+midterm exam score (continuous values with mean 60 and standard
+deviation 15). The fitted model is Pr(pass) = logit-1(-24 + 0.4x).
+
+\hypertarget{a-5}{%
+\subsection{(a)}\label{a-5}}
+
+Graph the fitted model. Also on this graph put a scatterplot of
+hypothetical data consistent with the information given.
+
+\hypertarget{b-5}{%
+\subsection{(b)}\label{b-5}}
+
+Suppose the midterm scores were transformed to have a mean of 0 and
+standard deviation of 1. What would be the equation of the logistic
+regression using these transformed scores as a redictor?
+
+\hypertarget{c-1}{%
+\subsection{(c)}\label{c-1}}
+
+Create a new predictor that is pure noise; for example, in R you can
+create newpred \textless- rnorm(n,0,1). Add it to your model. How much
+does the leave-one-out cross validation score decrease?
+
+\#14.7 Model building and comparison: Continue with the well-switching
+data described in the previous exercise.
+
+\hypertarget{a-6}{%
+\subsection{(a)}\label{a-6}}
+
+Fit a logistic regression for the probability of switching using, as
+predictors, distance, log(arsenic), and their interaction. Interpret the
+estimated coefficients and their standard errors.
+
+\hypertarget{b-6}{%
+\subsection{(b)}\label{b-6}}
+
+Make graphs as in Figure 14.3 to show the relation between probability
+of switching, distance, and arsenic level.
+
+\hypertarget{c-2}{%
+\subsection{(c)}\label{c-2}}
+
+Following the procedure described in Section 14.4, compute the average
+predictive differences corresponding to:\\
+i. A comparison of dist = 0 to dist = 100, with arsenic held constant.\\
+ii. A comparison of dist = 100 to dist = 200, with arsenic held
+constant.\\
+iii. A comparison of arsenic = 0.5 to arsenic = 1.0, with dist held
+constant.\\
+iv. A comparison of arsenic = 1.0 to arsenic = 2.0, with dist held
+constant.
+
+Discuss these results.
+
+\hypertarget{section-6}{%
+\section{14.9}\label{section-6}}
+
+Linear or logistic regression for discrete data: Simulate continuous
+data from the regression model, z = a + bx + error. Set the parameters
+so that the outcomes z are positive about half the time and negative
+about half the time.
+
+\hypertarget{a-7}{%
+\subsection{(a)}\label{a-7}}
+
+Create a binary variable y that equals 1 if z is positive or 0 if z is
+negative. Fit a logistic regression predicting y from x.
+
+\hypertarget{b-7}{%
+\subsection{(b)}\label{b-7}}
+
+Fit a linear regression predicting y from x: you can do this, even
+though the data y are discrete.
+
+\hypertarget{c-3}{%
+\subsection{(c)}\label{c-3}}
+
+Estimate the average predictive comparison---the expected difference in
+y, corresponding to a unit difference in x---based on the fitted
+logistic regression in (a). Compare this average predictive comparison
+to the linear regression coefficient in (b).
+
+\hypertarget{section-7}{%
+\section{14.10}\label{section-7}}
+
+Linear or logistic regression for discrete data: In the setup of the
+previous exercise:
+
+\hypertarget{a-8}{%
+\subsection{(a)}\label{a-8}}
+
+Set the parameters of your simulation so that the coefficient estimate
+in (b) and the average predictive comparison in (c) are close.
+
+\hypertarget{b-8}{%
+\subsection{(b)}\label{b-8}}
+
+Set the parameters of your simulation so that the coefficient estimate
+in (b) and the average predictive comparison in (c) are much different.
+
+\hypertarget{c-4}{%
+\subsection{(c)}\label{c-4}}
+
+In general, when will it work reasonably well to fit a linear model to
+predict a binary outcome? See also Exercise 13.12.
+
+\end{document}
