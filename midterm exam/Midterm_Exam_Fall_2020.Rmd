@@ -7,8 +7,18 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+pacman::p_load(
+  rstan,
+  rstanarm,
+  ggplot2,
+  bayesplot,
+  AER,
+  pwr,
+  loo
+)
 library(rstanarm)
 library(bayesplot)
+library(AER)
 ```
 
 ## Instruction
@@ -35,8 +45,6 @@ motor <- read.csv("motorcycles.csv")
 head(motor)
 motor$passTotal <- motor$paseenger2orMore + motor$passenger1
 
-mean(motor$passTotal)
-sd(motor$passTotal)
 ```
 
 ### EDA (10pts)
@@ -44,8 +52,6 @@ sd(motor$passTotal)
 Please create one (maybe two) figure(s) that highlights the contrast of interest.  Make sure you think ahead and match your figure with the analysis.  For example, if your model requires you to take a log, make sure you take log in the figure as well.
 
 ```{r }
-
-par(mfrow = c(1,2))
 ggplot(data = motor)+
   geom_point(aes(x= log(total), y = log(passTotal) , color = factor(time) ))
 ```
@@ -55,18 +61,19 @@ ggplot(data = motor)+
 Please perform power analysis on the project.  Use 80% power, the sample size you used and infer the level of effect size you will be able to detect.  Discuss whether your sample size was enough for the problem at hand.  Please note that method of power analysis should match the analysis.  Also, please clearly state why you should NOT use the effect size from the fitted model.
 
 ```{r }
+pwr.t.test(n=10, d=NULL, sig.level=0.05,power=0.8, type = "one.sample")
 
 ```
-
+ANSWER: The calculated effect size(d=0.996) for my data is too large, meaning that I probably don't have a large enough sample size for my problem. I should not use this large an effect size, because even if my modeling comes out significant, my two comparison groups wouldn't differ more than 0.2 standard deviations. 
 
 ### Modeling (10pts)
 
 Please pick a regression model that best fits your data and fit your model.  Please make sure you describe why you decide to choose the model. Also, if you are using GLM, make sure you explain your choice of link function as well.
 
-ANSWER: 
+ANSWER: I choose to fit the data to a generalized linear model with Poisson distribution. The Poisson GLM model is appropriate because we have count data in a fixed time period, without inflated zero counts. Log link is standard when using a Poisson distribution. I also set offset to log(total), because the total motorcycles passed this intersection is the baseline for the number of motorcycles with passengers.
 ```{r }
+fit <- stan_glm(passTotal ~ factor(time) , family = poisson(link = "log"), offset = log(total), data = motor, refresh=0 )
 
-fit <- stan_glm(formula = passTotal ~ factor(time) , family = (link = "log"), offset = log(total), data = motor, refresh=0 )
 summary(fit, digits = 4)
 ```
 
@@ -74,16 +81,25 @@ summary(fit, digits = 4)
 
 Please perform a necessary validation and argue why your choice of the model is appropriate.  
 
+ANSWER:
+Let’s first assess our model with posterior predictive checks.
 ```{r }
-post.fit = posterior_predict(fit2)
-ppc_dens_overlay( y = motor$passTotal, yrep=post.fit[1:100,])
-plot(fitted(fit2),resid(fit2),pch=20) 
-curve(sqrt(x),add=T)
-ppc_error_scatter_avg(y=motor$passTotal,yrep=post.fit)
-# sim = posterior_predict(fit2,draws=1000)
-# ppc_dens_overlay(motor$passTotal,sim[1:100,])
+post.fit = posterior_predict(fit)
+ppc_dens_overlay(y = motor$passTotal, yrep=post.fit[1:200,])
 ```
+From this we can see that our model barely predicts the same as our data, with large variance too.
 
+Let's make sure Poisson is the right GLM to use by further checking overdispersion: With a Poisson model, we expect our model’s standard deviation to have a square root relationship with our fitted mean, so we can check overdispersion by plotting the residual and the curve.
+
+We can also use residual plot and dispersiontest() to check our model.
+```{r}
+plot(fitted(fit),resid(fit),pch=20, ylim = c(-10,10)) 
+curve(sqrt(x),add=T)
+dispersiontest(fit)
+```
+ANSWER: 
+
+We can observe that most residuals are below the curve and dispersion test is 0.33, meaning it's unlikely we have an overdispersion problem. Therefore, we can be confident with our Poisson model.
 
 ### Inference (10pts)
 
@@ -91,17 +107,28 @@ Based on the result so far please perform statistical inference to compare the c
 
 ```{r }
 
+posterior_interval(fit)
 ```
-
+ANSWER:
+Since the 95% confidence interval crosses zero, we cannot be certain that whether noon has more passengers than evening time.
 
 ### Discussion (10pts)
 
 Please clearly state your conclusion and the implication of the result.
 
+ANSWER:
+
+In conclusion, my analysis shows that this sample size is not large enough to draw a significant conclusion to answer my client's question. With the limited data we have, we also cannot conclude that noon time has more or fewer motorcycles with passengers than evening time, given the total motorcycles passed.
+
 
 ### Limitations and future opportunity. (10pts)
 
 Please list concerns about your analysis.  Also, please state how you might go about fixing the problem in your future study.
+
+My concerns are:
+1. the sample size is too small, this can be fixed by increasing the number of observations; 
+2. 3min interval may be too arbitrary that does not take account into how many times the traffic light changes, which can affect the total number of motorcycles passed. This issue can be addressed by observing the intervals of traffic light change first, and then collect data according to the change of traffic light.
+3. the model's prediction has large variance; this might be fixed by having larger sample size.
 
 
 ### Comments or questions
