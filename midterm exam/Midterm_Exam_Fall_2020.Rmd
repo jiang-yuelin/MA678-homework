@@ -1,12 +1,14 @@
 ---
 title: "Midterm Exam"
-author: "Your Name"
+author: "Yuelin Jiang"
 date: "11/2/2020"
 output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(rstanarm)
+library(bayesplot)
 ```
 
 ## Instruction
@@ -20,14 +22,21 @@ When you finish, please compile and submit the PDF file and the link to the GitH
 
 ## Introduction
 
-In this exam, you will act as both the client and the consultant for the data that you collected in the data collection exercise (20pts).  Please note that you are not allowed to change the data.  The goal of this exam is to demonstrate your ability to perform the statistical analysis that you learned in this class so far.  It is important to note that significance of the analysis is not the main goal of this exam but the focus is on the appropriateness of your approaches.
+In this exam, you will act as both the client and the consultant for the data that you collected in the data collection exercise (20pts).  Please note that you are not allowed to change the data. The goal of this exam is to demonstrate your ability to perform the statistical analysis that you learned in this class so far.  It is important to note that significance of the analysis is not the main goal of this exam but the focus is on the appropriateness of your approaches.
 
 ### Data Description (10pts)
 
 Please explain what your data is about and what the comparison of interest is.  In the process, please make sure to demonstrate that you can load your data properly into R.
 
+ANSWER:
+The data is count data of motorcycles passed at an intersection given the same amount of time (3 minutes). My interest of question is, whether the number of motorcycles with passengers are different between noontime and evening time. The analysis should take into account of the total motorcycles passed during this time.
 ```{r }
+motor <- read.csv("motorcycles.csv")
+head(motor)
+motor$passTotal <- motor$paseenger2orMore + motor$passenger1
 
+mean(motor$passTotal)
+sd(motor$passTotal)
 ```
 
 ### EDA (10pts)
@@ -36,6 +45,9 @@ Please create one (maybe two) figure(s) that highlights the contrast of interest
 
 ```{r }
 
+par(mfrow = c(1,2))
+ggplot(data = motor)+
+  geom_point(aes(x= log(total), y = log(passTotal) , color = factor(time) ))
 ```
 
 ### Power Analysis (10pts)
@@ -50,8 +62,12 @@ Please perform power analysis on the project.  Use 80% power, the sample size yo
 ### Modeling (10pts)
 
 Please pick a regression model that best fits your data and fit your model.  Please make sure you describe why you decide to choose the model. Also, if you are using GLM, make sure you explain your choice of link function as well.
+
+ANSWER: 
 ```{r }
 
+fit <- stan_glm(formula = passTotal ~ factor(time) , family = (link = "log"), offset = log(total), data = motor, refresh=0 )
+summary(fit, digits = 4)
 ```
 
 ### Validation (10pts)
@@ -59,7 +75,13 @@ Please pick a regression model that best fits your data and fit your model.  Ple
 Please perform a necessary validation and argue why your choice of the model is appropriate.  
 
 ```{r }
-
+post.fit = posterior_predict(fit2)
+ppc_dens_overlay( y = motor$passTotal, yrep=post.fit[1:100,])
+plot(fitted(fit2),resid(fit2),pch=20) 
+curve(sqrt(x),add=T)
+ppc_error_scatter_avg(y=motor$passTotal,yrep=post.fit)
+# sim = posterior_predict(fit2,draws=1000)
+# ppc_dens_overlay(motor$passTotal,sim[1:100,])
 ```
 
 
